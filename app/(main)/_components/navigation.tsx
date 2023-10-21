@@ -6,18 +6,28 @@ import {
     Plus,
     PlusCircle,
     Search,
+    SearchIcon,
     Settings,
     Trash,
 } from "lucide-react";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { ElementRef, useEffect, useRef, useState } from "react";
 import { useMediaQuery } from "usehooks-ts";
+import { useQuery, useMutation } from "convex/react";
+import { toast } from "sonner";
 
+import { api } from "@/convex/_generated/api";
 import { cn } from "@/lib/utils";
+import { UserItem } from "./user-item";
+import Item from "./item";
+
+
 
 const Navigation = () => {
     const pathname = usePathname();
     const isMobile = useMediaQuery("(max-width:768px)");
+    const documents = useQuery(api.documents.get);
+    const create = useMutation(api.documents.create)
 
     const isResizingRef = useRef(false);
     const sidebarRef = useRef<ElementRef<"aside">>(null);
@@ -25,20 +35,17 @@ const Navigation = () => {
     const [isResetting, setIsResetting] = useState(false);
     const [isCollapsed, setIsCollapsed] = useState(isMobile);
 
-
-    useEffect(()=> {
-        if(isMobile){
-            collapse()
-        } else (
-            resetwidth()
-        )
+    useEffect(() => {
+        if (isMobile) {
+            collapse();
+        } else resetwidth();
     }, [isMobile]);
 
     useEffect(() => {
-        if(isMobile){
-            collapse()
+        if (isMobile) {
+            collapse();
         }
-    }, [pathname, isMobile])
+    }, [pathname, isMobile]);
 
     const handleMouseDown = (
         event: React.MouseEvent<HTMLDivElement, MouseEvent>
@@ -107,6 +114,17 @@ const Navigation = () => {
         }
     };
 
+
+    const handleCreate = () => {
+        const promise =  create({title: "Updating Note"});
+
+        toast.promise(promise, {
+            loading: 'Creating a new note...',
+            success: 'New note created!',
+            error: "Failed to create the note"
+        })
+    }
+
     return (
         <>
             <aside
@@ -128,10 +146,14 @@ const Navigation = () => {
                     <ChevronsLeft className="h-6 w-6" />
                 </div>
                 <div>
-                    <p>Action Items</p>
+                    <UserItem />
                 </div>
+                <Item label="Search" icon={SearchIcon} isSearch onClick={() => {}} />
+                <Item onClick={handleCreate} label="New Note" icon={PlusCircle} />
                 <div className="mt-4">
-                    <p>Documents</p>
+                    {documents?.map((document) => (
+                        <p key={document._id}>{document.title}</p>
+                    ))}
                 </div>
                 <div
                     onMouseDown={handleMouseDown}
