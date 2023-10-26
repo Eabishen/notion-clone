@@ -50,7 +50,7 @@ const Cover = ({ url, preview }: CoverImageProps) => {
         <Button onClick={onRemove} className="text-rose-400/60 hover:text-rose-400 text-xs" variant="outline" size="sm">
           <X className="h-4 w-4 mr-2" />
           Change cover
-        </Button>'
+        </Button>
 '      </div>
     )}
   </div>;
