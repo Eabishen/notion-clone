@@ -51,7 +51,7 @@ const Cover = ({ url, preview }: CoverImageProps) => {
           <X className="h-4 w-4 mr-2" />
           Change cover
         </Button>
-'      </div>
+      </div>
     )}
   </div>;
 };
