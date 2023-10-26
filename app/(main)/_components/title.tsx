@@ -11,19 +11,19 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface TitleProps {
-  initalData: Doc<"documents">;
+  initialData: Doc<"documents">;
 }
 
-const Title = ({ initalData }: TitleProps) => {
+const Title = ({ initialData }: TitleProps) => {
   const update = useMutation(api.documents.update);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const [title, setTitle] = useState(initalData.title || "Untitled");
+  const [title, setTitle] = useState(initialData.title || "Untitled");
   const [isEditing, setIsEditing] = useState(false);
 
   const enableInput = () => {
-    setTitle(initalData.title);
+    setTitle(initialData.title);
     setIsEditing(true);
     setTimeout(() => {
       inputRef.current?.focus();
@@ -38,7 +38,7 @@ const Title = ({ initalData }: TitleProps) => {
   const onchange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
     update({
-      id: initalData._id,
+      id: initialData._id,
       title: e.target.value || "Untitled",
     });
   };
@@ -51,7 +51,7 @@ const Title = ({ initalData }: TitleProps) => {
 
   return (
     <div className="flex ic  gap-x-1">
-      {!!initalData.icon && <p>{initalData.icon}</p>}
+      {!!initialData.icon && <p>{initialData.icon}</p>}
       {isEditing ? (
         <Input
           ref={inputRef}
@@ -69,7 +69,7 @@ const Title = ({ initalData }: TitleProps) => {
           size="sm"
           className="h-auto p-1 font-normal"
         >
-          <span className="truncate">{initalData?.title}</span>
+          <span className="truncate">{initialData?.title}</span>
         </Button>
       )}
     </div>
