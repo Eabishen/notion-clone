@@ -1,0 +1,85 @@
+"use client";
+
+import React, { useRef, useState } from "react";
+import { useMutation } from "convex/react";
+
+import { Doc } from "@/convex/_generated/dataModel";
+import { api } from "@/convex/_generated/api";
+
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+
+interface TitleProps {
+  initalData: Doc<"documents">;
+}
+
+const Title = ({ initalData }: TitleProps) => {
+  const update = useMutation(api.documents.update);
+
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const [title, setTitle] = useState(initalData.title || "Untitled");
+  const [isEditing, setIsEditing] = useState(false);
+
+  const enableInput = () => {
+    setTitle(initalData.title);
+    setIsEditing(true);
+    setTimeout(() => {
+      inputRef.current?.focus();
+      inputRef.current?.setSelectionRange(0, inputRef.current.value.length);
+    }, 0);
+  };
+
+  const disableInput = () => {
+    setIsEditing(false);
+  };
+
+  const onchange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(e.target.value);
+    update({
+      id: initalData._id,
+      title: e.target.value || "Untitled",
+    });
+  };
+
+  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      disableInput();
+    }
+  };
+
+  return (
+    <div className="flex ic  gap-x-1">
+      {!!initalData.icon && <p>{initalData.icon}</p>}
+      {isEditing ? (
+        <Input
+          ref={inputRef}
+          onClick={enableInput}
+          onBlur={disableInput}
+          onChange={onchange}
+          onKeyDown={onKeyDown}
+          value={title}
+          className="h-7 px-2 focus-visible:ring-transparent"
+        />
+      ) : (
+        <Button
+          onClick={enableInput}
+          variant="ghost"
+          size="sm"
+          className="h-auto p-1 font-normal"
+        >
+          <span className="truncate">{initalData?.title}</span>
+        </Button>
+      )}
+    </div>
+  );
+};
+
+Title.Skeleton = function TitleSKeleton() {
+  return (
+    <Skeleton className="h-9 w-24 rounded-md" />
+  )
+}
+
+export default Title;
