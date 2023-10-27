@@ -105,7 +105,7 @@ const Navigation = () => {
       );
       navbarRef.current.style.setProperty(
         "left",
-        isMobile ? "0%" : "240px"
+        isMobile ? "100%" : "240px"
         //it was in the video isMobile ? "100%" : "240px"
       );
 

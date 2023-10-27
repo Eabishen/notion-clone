@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { useMutation } from "convex/react";
 
 import { Doc } from "@/convex/_generated/dataModel";
@@ -9,6 +9,8 @@ import { api } from "@/convex/_generated/api";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useMediaQuery } from "usehooks-ts";
+import { cn } from "@/lib/utils";
 
 interface TitleProps {
   initialData: Doc<"documents">;
@@ -21,6 +23,7 @@ const Title = ({ initialData }: TitleProps) => {
 
   const [title, setTitle] = useState(initialData.title || "Untitled");
   const [isEditing, setIsEditing] = useState(false);
+  const isMobile = useMediaQuery("(max-width:768px)");
 
   const enableInput = () => {
     setTitle(initialData.title);
@@ -69,7 +72,9 @@ const Title = ({ initialData }: TitleProps) => {
           size="sm"
           className="h-auto p-1 font-normal"
         >
-          <span className="truncate">{initialData?.title}</span>
+          <span className={cn("truncate", isMobile ? "w-32" : "w-auto")}>
+            {initialData?.title}
+          </span>
         </Button>
       )}
     </div>
@@ -77,9 +82,7 @@ const Title = ({ initialData }: TitleProps) => {
 };
 
 Title.Skeleton = function TitleSKeleton() {
-  return (
-    <Skeleton className="h-9 w-24 rounded-md" />
-  )
-}
+  return <Skeleton className="h-9 w-24 rounded-md" />;
+};
 
 export default Title;
